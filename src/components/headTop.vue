@@ -16,14 +16,12 @@
 </template>
 
 <script>
-	// import {signout} from '@/api/getData'
-	// import {baseImgPath} from '@/config/env'
 	import {mapActions, mapState} from 'vuex'
 
     export default {
     	data(){
     		return {
-    			// baseImgPath,
+
     		}
     	},
     	created(){
@@ -54,6 +52,6 @@
 		margin-right: 37px;
 	}
 	.el-dropdown-menu__item{
-        text-align: center;
-    }
+		text-align: center;
+	}
 </style>
