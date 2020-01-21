@@ -45,7 +45,6 @@
                                 @click="setdate(props.row)">
                                 确认
                             </el-button>
-                            <!-- <span>{{ props.row.picurls.idarr[0] }}</span> -->
                         </el-form-item>
                     </el-form>
                   </template>
@@ -85,7 +84,6 @@
                 <el-table-column label="操作" width="160">
                   <template slot-scope="scope">
                     <el-button
-                        :ref="'match' + scope.row.id" 
                         size="small"
                         type="success"
                         @click="orderunlock(scope.row.id)"
@@ -112,7 +110,7 @@
 <script>
     const axios = require('axios');
     import headTop from '../components/headTop'
-    import { SIGUSR1 } from 'constants';
+    
     export default {
         data(){
             return {
@@ -123,13 +121,9 @@
                 tableData: [],
                 showtableData: [],
                 currentPage: 1,
-                teacurrentPage: 1,
                 headertoken: "",
-                matcharr: [],
                 addday: '',
                 addtime: '',
-                tableupdate: true,
-                markvalue: 0,
             }
         },
         created(){
@@ -154,12 +148,9 @@
                 }
             },
             async initData(){
-                this.getFoods();
+                this.getOrders();
             },
-            async getMenu(){
-                console.log('获取食品种类失败', err);
-            },
-            async getFoods(){
+            async getOrders(){
                 this.tableData = [];
                 const response = await axios.get(`https://api.deaso40.com/api/getallorders`, {
                     data: {}, 
@@ -216,22 +207,14 @@
                 await this.initData();
                 this.Clicktab({name: this.activeName});
             },
-            tableRowClassName(row, index) {
-		        if (index === 1) {
-		        	return 'info-row';
-		        } else if (index === 3) {
-		        	return 'positive-row';
-		        }
-		        return '';
-		    },
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {
-                this.currentPage = val;
-                this.offset = (val - 1)*this.limit;
-                this.getFoods()
-            },
+            // handleSizeChange(val) {
+            //     console.log(`每页 ${val} 条`);
+            // },
+            // handleCurrentChange(val) {
+            //     this.currentPage = val;
+            //     this.offset = (val - 1)*this.limit;
+            //     this.getFoods()
+            // },
             removeByValue(arr, val) {
                 for(var i = 0; i < arr.length; i++) {
                     if(arr[i] == val) {
@@ -304,29 +287,6 @@
         display: flex;
         justify-content: flex-start;
         margin-top: 8px;
-    }
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-        border-color: #20a0ff;
-    }
-    .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 120px;
-        height: 120px;
-        line-height: 120px;
-        text-align: center;
-    }
-    .avatar {
-        width: 120px;
-        height: 120px;
-        display: block;
     }
     .inputlength{
         width: 150px;

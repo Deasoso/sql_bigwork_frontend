@@ -1,14 +1,10 @@
 <template>
+    <!-- 教师提现页面 -->
     <div class="fillcontain">
         <head-top></head-top>
         <el-input v-model="headertoken" placeholder="请输入header">
         </el-input>
         <el-button type="primary" @click="initData">获取教师信息</el-button>
-        <!-- <el-tabs v-model="activeName" type="card" @tab-click="Clicktab">
-            <el-tab-pane label="全部" name="all"></el-tab-pane>
-            <el-tab-pane label="未推送" name="nopushed"></el-tab-pane>
-            <el-tab-pane label="已推送" name="pushed"></el-tab-pane>
-        </el-tabs> -->
         <!-- 显示教师表格 -->
         <div class="table_container">
             <el-table
@@ -105,7 +101,7 @@
 <script>
 const axios = require("axios");
 import headTop from "../components/headTop";
-import { SIGUSR1 } from "constants";
+
 export default {
   data() {
     return {
@@ -125,44 +121,18 @@ export default {
     headTop
   },
   methods: {
-    // Clicktab(e){
-    //     this.activeName = e.name;
-    //     if(e.name == "all"){
-    //         this.showteatableData = this.teatableData;
-    //         this.$refs.teatable.data = this.showteatableData;
-    //     }else if(e.name == "nopushed"){
-    //         this.showteatableData = this.teatableData.filter(item => item.pushed == 0)
-    //         this.$refs.teatable.data = this.showteatableData;
-    //     }else if(e.name == "pushed"){
-    //         this.showteatableData = this.teatableData.filter(item => item.pushed == 1)
-    //         this.$refs.teatable.data = this.showteatableData;
-    //     }
-    // },
     async initData() {
       this.getTeachers();
     },
-    async getMenu() {
-      console.log("获取食品种类失败", err);
-    },
-    tableRowClassName(row, index) {
-      if (index === 1) {
-        return "info-row";
-      } else if (index === 3) {
-        return "positive-row";
-      }
-      return "";
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-      this.offset = (val - 1) * this.limit;
-      this.getFoods();
-    },
+    // handleSizeChange(val) {
+    //   console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //   this.currentPage = val;
+    //   this.offset = (val - 1) * this.limit;
+    //   this.getTeachers();
+    // },
     async withdraw(inputonlyid, inputwithdraw) {
-      console.log(inputonlyid);
-      console.log(inputwithdraw);
       const response = await axios.post(
         `https://api.deaso40.com/api/withdrawed`,
         {
@@ -231,28 +201,5 @@ export default {
   display: flex;
   justify-content: flex-start;
   margin-top: 8px;
-}
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  display: block;
 }
 </style>
