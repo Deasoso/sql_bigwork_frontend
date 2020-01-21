@@ -23,7 +23,7 @@
     export default {
     	data(){
     		return {
-    			baseImgPath,
+    			// baseImgPath,
     		}
     	},
     	created(){

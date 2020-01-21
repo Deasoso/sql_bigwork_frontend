@@ -12,7 +12,6 @@
         <!-- 显示订单表格 -->
         <div class="table_container" v-show="activeName!='tea'">
             <el-table
-                v-if="tableupdate"
                 :data="showtableData"
                 ref="ordtable"
                 :row-key="row => row.index"
