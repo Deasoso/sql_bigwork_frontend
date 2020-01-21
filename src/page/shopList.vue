@@ -121,149 +121,166 @@
 </template>
 
 <script>
-    const axios = require('axios');
-    import headTop from '../components/headTop'
+const axios = require("axios");
+import headTop from "../components/headTop";
 
-    export default {
-        data(){
-            return {
-                activeName: 'all',
-                offset: 0,
-                limit: 20,
-                count: 1,
-                teatableData: [],
-                showteatableData: [],
-                teacurrentPage: 1,
-                headertoken: "",
-            }
+export default {
+  data() {
+    return {
+      activeName: "all",
+      offset: 0,
+      limit: 20,
+      count: 1,
+      teatableData: [],
+      showteatableData: [],
+      teacurrentPage: 1,
+      headertoken: ""
+    };
+  },
+  created() {},
+  computed: {},
+  components: {
+    headTop
+  },
+  methods: {
+    Clicktab(e) {
+      this.activeName = e.name;
+      console.log(this.teatableData);
+      if (e.name == "all") {
+        this.showteatableData = this.teatableData;
+        this.$refs.teatable.data = this.showteatableData;
+      } else if (e.name == "nopushed") {
+        this.showteatableData = this.teatableData.filter(
+          item => item.pushed == 0
+        );
+        this.$refs.teatable.data = this.showteatableData;
+      } else if (e.name == "pushed") {
+        this.showteatableData = this.teatableData.filter(
+          item => item.pushed == 1
+        );
+        this.$refs.teatable.data = this.showteatableData;
+      }
+    },
+    async initData() {
+      this.getTeachers();
+    },
+    // handleSizeChange(val) {
+    //     console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //     this.currentPage = val;
+    //     this.offset = (val - 1)*this.limit;
+    //     this.getFoods()
+    // },
+    async pushteacher(inputonlyid) {
+      console.log(inputonlyid);
+      const response = await axios.post(
+        `https://api.deaso40.com/api/pushreview`,
+        {
+          onlyid: inputonlyid
         },
-        created(){
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
+      await this.initData();
+      this.Clicktab({ name: this.activeName });
+    },
+    async unpushteacher(inputonlyid) {
+      console.log(inputonlyid);
+      const response = await axios.post(
+        `https://api.deaso40.com/api/unpushreview`,
+        {
+          onlyid: inputonlyid
         },
-        computed: {
-        },
-        components: {
-            headTop,
-        },
-        methods: {
-            Clicktab(e){
-                this.activeName = e.name;
-                console.log(this.teatableData);
-                if(e.name == "all"){
-                    this.showteatableData = this.teatableData;
-                    this.$refs.teatable.data = this.showteatableData;
-                }else if(e.name == "nopushed"){
-                    this.showteatableData = this.teatableData.filter(item => item.pushed == 0)
-                    this.$refs.teatable.data = this.showteatableData;
-                }else if(e.name == "pushed"){
-                    this.showteatableData = this.teatableData.filter(item => item.pushed == 1)
-                    this.$refs.teatable.data = this.showteatableData;
-                }
-            },
-            async initData(){
-                this.getTeachers();
-            },
-            // handleSizeChange(val) {
-            //     console.log(`每页 ${val} 条`);
-            // },
-            // handleCurrentChange(val) {
-            //     this.currentPage = val;
-            //     this.offset = (val - 1)*this.limit;
-            //     this.getFoods()
-            // },
-            async pushteacher(inputonlyid){
-                console.log(inputonlyid);
-                const response = await axios.post(`https://api.deaso40.com/api/pushreview`, 
-                    {   
-                        onlyid: inputonlyid,
-                    }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                const data = response.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.$message("成功");
-                }
-                await this.initData();
-                this.Clicktab({name: this.activeName});
-            },
-            async unpushteacher(inputonlyid){
-                console.log(inputonlyid);
-                const response = await axios.post(`https://api.deaso40.com/api/unpushreview`, 
-                    {   
-                        onlyid: inputonlyid,
-                    }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                const data = response.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.$message("成功");
-                }
-                await this.initData();
-                this.Clicktab({name: this.activeName});
-            },
-            async getTeachers(){
-                this.teatableData = [];
-                const response = await axios.get(`https://api.deaso40.com/api/getallreviews`, {
-                    data: {}, 
-                    headers: {
-                        'token': this.headertoken
-                    }
-                })
-                const data = response.data;
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    console.log(data);
-                    this.teatableData = response.data.result;
-                    this.teatableData.forEach((item, index) => {
-                        if (this.teatableData[index].pushed == 0) this.teatableData[index].pushedtext = "未推送";
-                        else if (this.teatableData[index].pushed == 1) this.teatableData[index].pushedtext = "已推送";
-                        else this.teatableData[index].pushedtext = "未填写";
-                        if (this.teatableData[index].reviewed == 0) this.teatableData[index].reviewedtext = "未提交";
-                        else if (this.teatableData[index].reviewed == 1) this.teatableData[index].reviewedtext = "未审核";
-                        else if (this.teatableData[index].reviewed == 2) this.teatableData[index].reviewedtext = "已通过";
-                        else if (this.teatableData[index].reviewed == 3) this.teatableData[index].reviewedtext = "未通过";
-                        else this.teatableData[index].reviewedtext = "出错";
-                    })
-                    this.teatableData = this.teatableData.filter(item => item.reviewed === 2);
-                    this.showteatableData = this.teatableData;
-                }
-            },
-        },
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
+      await this.initData();
+      this.Clicktab({ name: this.activeName });
+    },
+    async getTeachers() {
+      this.teatableData = [];
+      const response = await axios.get(
+        `https://api.deaso40.com/api/getallreviews`,
+        {
+          data: {},
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        console.log(data);
+        this.teatableData = response.data.result;
+        this.teatableData.forEach((item, index) => {
+          if (this.teatableData[index].pushed == 0)
+            this.teatableData[index].pushedtext = "未推送";
+          else if (this.teatableData[index].pushed == 1)
+            this.teatableData[index].pushedtext = "已推送";
+          else this.teatableData[index].pushedtext = "未填写";
+          if (this.teatableData[index].reviewed == 0)
+            this.teatableData[index].reviewedtext = "未提交";
+          else if (this.teatableData[index].reviewed == 1)
+            this.teatableData[index].reviewedtext = "未审核";
+          else if (this.teatableData[index].reviewed == 2)
+            this.teatableData[index].reviewedtext = "已通过";
+          else if (this.teatableData[index].reviewed == 3)
+            this.teatableData[index].reviewedtext = "未通过";
+          else this.teatableData[index].reviewedtext = "出错";
+        });
+        this.teatableData = this.teatableData.filter(
+          item => item.reviewed === 2
+        );
+        this.showteatableData = this.teatableData;
+      }
     }
+  }
+};
 </script>
 
 <style lang="less">
-	@import '../style/mixin';
-    .demo-table-expand {
-        font-size: 0;
-    }
-    .demo-table-expand label {
-        width: 90px;
-        color: #99a9bf;
-    }
-    .demo-table-expand .el-form-item {
-        margin-right: 0;
-        margin-bottom: 0;
-        width: 100%;
-    }
-    .table_container{
-        padding: 20px;
-    }
-    .Pagination{
-        display: flex;
-        justify-content: flex-start;
-        margin-top: 8px;
-    }
+@import "../style/mixin";
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
+.table_container {
+  padding: 20px;
+}
+.Pagination {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
 </style>

@@ -120,156 +120,167 @@
 </template>
 
 <script>
-    const axios = require('axios');
-    import headTop from '../components/headTop'
-    export default {
-        data(){
-            return {
-                activeName: 'all',
-                offset: 0,
-                limit: 20,
-                count: 1,
-                tableData: [],
-                showtableData: [],
-                currentPage: 1,
-                headertoken: "",
-            }
+const axios = require("axios");
+import headTop from "../components/headTop";
+export default {
+  data() {
+    return {
+      activeName: "all",
+      offset: 0,
+      limit: 20,
+      count: 1,
+      tableData: [],
+      showtableData: [],
+      currentPage: 1,
+      headertoken: ""
+    };
+  },
+  created() {},
+  computed: {},
+  components: {
+    headTop
+  },
+  methods: {
+    Clicktab(e) {
+      console.log(this.$refs.eltable);
+      this.activeName = e.name;
+      console.log(e.name);
+      if (e.name == "all") {
+        this.showtableData = this.tableData;
+      } else if (e.name == "no") {
+        this.showtableData = this.tableData.filter(item => item.reviewed === 1);
+      } else if (e.name == "yes") {
+        this.showtableData = this.tableData.filter(item => item.reviewed === 2);
+      } else if (e.name == "cancel") {
+        this.showtableData = this.tableData.filter(item => item.reviewed === 3);
+      }
+      this.$refs.eltable.data = this.showtableData;
+    },
+    async initData() {
+      await this.getReviews();
+      this.Clicktab({ name: this.activeName });
+    },
+    async getReviews() {
+      const _this = this;
+      this.tableData = [];
+      const response = await axios.get(
+        `https://api.deaso40.com/api/getallreviews`,
+        {
+          data: {},
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        _this.$message(data.message);
+      } else {
+        _this.tableData = response.data.result;
+        _this.tableData.forEach((item, index) => {
+          if (_this.tableData[index].reviewed == 0)
+            _this.tableData[index].reviewedtext = "未提交";
+          else if (_this.tableData[index].reviewed == 1)
+            _this.tableData[index].reviewedtext = "未审核";
+          else if (_this.tableData[index].reviewed == 2)
+            _this.tableData[index].reviewedtext = "已通过";
+          else if (_this.tableData[index].reviewed == 3)
+            _this.tableData[index].reviewedtext = "未通过";
+          else _this.tableData[index].reviewedtext = "出错";
+        });
+        _this.showtableData = _this.tableData;
+      }
+    },
+    // handleSizeChange(val) {
+    //     console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //     this.currentPage = val;
+    //     this.offset = (val - 1)*this.limit;
+    //     this.getReviews()
+    // },
+    async agreereview(inputonlyid) {
+      const res = await axios.post(
+        `https://api.deaso40.com/api/agreereview`,
+        { onlyid: inputonlyid },
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = res.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
+      await this.getReviews();
+      this.$message("成功");
+      this.Clicktab({ name: this.activeName });
+      console.log(res);
+    },
+    async cancelreview(inputonlyid) {
+      const value = await new Promise((resolve, reject) => {
+        this.$prompt("请输入不通过原因", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消"
+        })
+          .then(({ value }) => {
+            resolve(value);
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消输入"
+            });
+            resolve("-1");
+          });
+      });
+      if (value == "-1") return;
+      const res = await axios.post(
+        `https://api.deaso40.com/api/cancelreview`,
+        {
+          onlyid: inputonlyid,
+          failtext: value
         },
-        created(){
-        },
-        computed: {
-        },
-    	components: {
-    		headTop,
-    	},
-        methods: {
-            Clicktab(e){
-                console.log(this.$refs.eltable);
-                this.activeName = e.name;
-                console.log(e.name);
-                if(e.name == "all"){
-                    this.showtableData = this.tableData
-                }else if(e.name == "no"){
-                    this.showtableData = this.tableData.filter(item => item.reviewed === 1)
-                }else if(e.name == "yes"){
-                    this.showtableData = this.tableData.filter(item => item.reviewed === 2)
-                }else if(e.name == "cancel"){
-                    this.showtableData = this.tableData.filter(item => item.reviewed === 3)
-                }
-                this.$refs.eltable.data = this.showtableData;
-            },
-            async initData(){
-                await this.getReviews();
-                this.Clicktab({name: this.activeName});
-            },
-            async getReviews(){
-                const _this = this;
-                this.tableData = [];
-                const response = await axios.get(`https://api.deaso40.com/api/getallreviews`, {
-                    data: {}, 
-                    headers: {
-                        'token': this.headertoken
-                    }
-                })
-                const data = response.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    _this.$message(data.message);
-                }else{
-                    _this.tableData = response.data.result;
-                    _this.tableData.forEach((item, index) => {
-                        if (_this.tableData[index].reviewed == 0) _this.tableData[index].reviewedtext = "未提交";
-                        else if (_this.tableData[index].reviewed == 1) _this.tableData[index].reviewedtext = "未审核";
-                        else if (_this.tableData[index].reviewed == 2) _this.tableData[index].reviewedtext = "已通过";
-                        else if (_this.tableData[index].reviewed == 3) _this.tableData[index].reviewedtext = "未通过";
-                        else _this.tableData[index].reviewedtext = "出错";
-                    })
-                    _this.showtableData = _this.tableData;
-                }
-            },
-            // handleSizeChange(val) {
-            //     console.log(`每页 ${val} 条`);
-            // },
-            // handleCurrentChange(val) {
-            //     this.currentPage = val;
-            //     this.offset = (val - 1)*this.limit;
-            //     this.getReviews()
-            // },
-            async agreereview(inputonlyid){
-                const res = await axios.post(`https://api.deaso40.com/api/agreereview`, 
-                    { onlyid: inputonlyid }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                const data = res.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.$message("成功");
-                }
-                await this.getReviews();
-                this.$message("成功");
-                this.Clicktab({name: this.activeName});
-                console.log(res);
-            },
-            async cancelreview(inputonlyid){
-                const value = await new Promise((resolve, reject) => {
-                    this.$prompt('请输入不通过原因', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                    }).then(({ value }) => {
-                        resolve(value)
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '取消输入'
-                        });    
-                        resolve('-1');   
-                    });
-                });
-                if (value == '-1') return;
-                const res = await axios.post(`https://api.deaso40.com/api/cancelreview`, 
-                    { 
-                        onlyid: inputonlyid,
-                        failtext: value
-                    }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                await this.getReviews();
-                this.$message("成功");
-                this.Clicktab({name: this.activeName});
-                console.log(res);
-            }
-        },
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      await this.getReviews();
+      this.$message("成功");
+      this.Clicktab({ name: this.activeName });
+      console.log(res);
     }
+  }
+};
 </script>
 
 <style lang="less">
-	@import '../style/mixin';
-    .demo-table-expand {
-        font-size: 0;
-    }
-    .demo-table-expand label {
-        width: 90px;
-        color: #99a9bf;
-    }
-    .demo-table-expand .el-form-item {
-        margin-right: 0;
-        margin-bottom: 0;
-        width: 100%;
-    }
-    .table_container{
-        padding: 20px;
-    }
-    .Pagination{
-        display: flex;
-        justify-content: flex-start;
-        margin-top: 8px;
-    }
+@import "../style/mixin";
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
+.table_container {
+  padding: 20px;
+}
+.Pagination {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
 </style>

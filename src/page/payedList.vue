@@ -108,187 +108,204 @@
 </template>
 
 <script>
-    const axios = require('axios');
-    import headTop from '../components/headTop'
-    
-    export default {
-        data(){
-            return {
-                activeName: 'all',
-                offset: 0,
-                limit: 20,
-                count: 1,
-                tableData: [],
-                showtableData: [],
-                currentPage: 1,
-                headertoken: "",
-                addday: '',
-                addtime: '',
+const axios = require("axios");
+import headTop from "../components/headTop";
+
+export default {
+  data() {
+    return {
+      activeName: "all",
+      offset: 0,
+      limit: 20,
+      count: 1,
+      tableData: [],
+      showtableData: [],
+      currentPage: 1,
+      headertoken: "",
+      addday: "",
+      addtime: ""
+    };
+  },
+  created() {},
+  computed: {},
+  components: {
+    headTop
+  },
+  methods: {
+    Clicktab(e) {
+      this.activeName = e.name;
+      if (e.name == "all") {
+        this.showtableData = this.tableData.filter(
+          item => item.payed == 1 && item.reviewed == 1
+        );
+        this.$refs.ordtable.data = this.showtableData;
+      } else if (e.name == "teaching") {
+        this.showtableData = this.tableData.filter(
+          item =>
+            item.payed == 1 &&
+            item.reviewed == 1 &&
+            item.teachtimes < item.times
+        );
+        this.$refs.ordtable.data = this.showtableData;
+      } else if (e.name == "teached") {
+        this.showtableData = this.tableData.filter(
+          item =>
+            item.payed == 1 &&
+            item.reviewed == 1 &&
+            item.teachtimes >= item.times
+        );
+        this.$refs.ordtable.data = this.showtableData;
+      }
+    },
+    async initData() {
+      this.getOrders();
+    },
+    async getOrders() {
+      this.tableData = [];
+      const response = await axios.get(
+        `https://api.deaso40.com/api/getallorders`,
+        {
+          data: {},
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      console.log(response);
+      const data = response.data;
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.tableData = response.data.result;
+        this.showtableData = this.tableData;
+      }
+      this.Clicktab({ name: this.activeName });
+    },
+    async orderunlock(inputid) {
+      const sure = await new Promise((resolve, reject) => {
+        this.$msgbox({
+          title: "提示",
+          message: "确认推进吗？",
+          showCancelButton: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          beforeClose: (action, instance, done) => {
+            if (action === "confirm") {
+              done();
+              resolve(true);
+            } else {
+              done();
+              resolve(false);
             }
+          }
+        });
+      });
+      if (!sure) return;
+      const response = await axios.post(
+        `https://api.deaso40.com/api/orderunlock`,
+        {
+          orderid: inputid
         },
-        created(){
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
+      await this.initData();
+      this.Clicktab({ name: this.activeName });
+    },
+    // handleSizeChange(val) {
+    //     console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //     this.currentPage = val;
+    //     this.offset = (val - 1)*this.limit;
+    //     this.getFoods()
+    // },
+    removeByValue(arr, val) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == val) {
+          arr.splice(i, 1);
+          i--;
+        }
+      }
+    },
+    adddate(order) {
+      console.log(this.addday + " " + this.addtime);
+      order.lessondays.push(this.addday);
+      order.lessontime.push(this.addtime);
+    },
+    deletedate(order, inputindex) {
+      console.log(inputindex);
+      function removeByValue(arr1, arr2, val) {
+        // 删除方法，由于lessondays和tilecontent对齐，可以一起删
+        for (let i = 0; i < arr1.length; i += 1) {
+          if (arr1[i] === val) {
+            arr1.splice(i, 1);
+            arr2.splice(i, 1);
+            i -= 1;
+          }
+        }
+      }
+      removeByValue(order.lessondays, order.lessontime, inputindex);
+    },
+    async setdate(order) {
+      const response = await axios.post(
+        `https://api.deaso40.com/api/setlessondays`,
+        {
+          orderid: order.id,
+          lessondays: order.lessondays,
+          lessontime: order.lessontime
         },
-        computed: {
-        },
-    	components: {
-    		headTop,
-    	},
-        methods: {
-            Clicktab(e){
-                this.activeName = e.name;
-                if(e.name == "all"){
-                    this.showtableData = this.tableData.filter(item => item.payed == 1 && item.reviewed == 1);
-                    this.$refs.ordtable.data = this.showtableData;
-                }else if(e.name == "teaching"){
-                    this.showtableData = this.tableData.filter(item => item.payed == 1 && item.reviewed == 1 && item.teachtimes < item.times);
-                    this.$refs.ordtable.data = this.showtableData;
-                }else if(e.name == "teached"){
-                    this.showtableData = this.tableData.filter(item => item.payed == 1 && item.reviewed == 1 && item.teachtimes >= item.times);
-                    this.$refs.ordtable.data = this.showtableData;
-                }
-            },
-            async initData(){
-                this.getOrders();
-            },
-            async getOrders(){
-                this.tableData = [];
-                const response = await axios.get(`https://api.deaso40.com/api/getallorders`, {
-                    data: {}, 
-                    headers: {
-                        'token': this.headertoken
-                    }
-                })
-                console.log(response);
-                const data = response.data;
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.tableData = response.data.result;
-                    this.showtableData = this.tableData;
-                }
-                this.Clicktab({name: this.activeName});
-            },
-            async orderunlock(inputid){
-                const sure = await new Promise((resolve, reject) => {
-                    this.$msgbox({
-                        title: '提示',
-                        message: '确认推进吗？',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: (action, instance, done) => {
-                            if (action === 'confirm') {
-                                done()
-                                resolve(true)
-                            } else {
-                                done()
-                                resolve(false)
-                            }
-                        }
-                    })
-                })
-                if(!sure) return;
-                const response = await axios.post(`https://api.deaso40.com/api/orderunlock`, 
-                    {   
-                        orderid: inputid, 
-                    }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                const data = response.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.$message("成功");
-                }
-                await this.initData();
-                this.Clicktab({name: this.activeName});
-            },
-            // handleSizeChange(val) {
-            //     console.log(`每页 ${val} 条`);
-            // },
-            // handleCurrentChange(val) {
-            //     this.currentPage = val;
-            //     this.offset = (val - 1)*this.limit;
-            //     this.getFoods()
-            // },
-            removeByValue(arr, val) {
-                for(var i = 0; i < arr.length; i++) {
-                    if(arr[i] == val) {
-                        arr.splice(i, 1);
-                        i--;
-                    }
-                }
-            },
-            adddate(order){
-                console.log(this.addday + ' ' + this.addtime)
-                order.lessondays.push(this.addday);
-                order.lessontime.push(this.addtime);
-            },
-            deletedate(order, inputindex){
-                console.log(inputindex)
-                function removeByValue(arr1, arr2, val) {
-                // 删除方法，由于lessondays和tilecontent对齐，可以一起删
-                    for (let i = 0; i < arr1.length; i += 1) {
-                        if (arr1[i] === val) {
-                            arr1.splice(i, 1);
-                            arr2.splice(i, 1);
-                            i -= 1;
-                        }
-                    }
-                }
-                removeByValue(order.lessondays, order.lessontime, inputindex);
-            },
-            async setdate(order){
-                const response = await axios.post(`https://api.deaso40.com/api/setlessondays`, 
-                    {   
-                        orderid: order.id,
-                        lessondays: order.lessondays,
-                        lessontime: order.lessontime,
-                    }, {
-                        headers: {
-                            'token': this.headertoken
-                        }
-                    }
-                );
-                const data = response.data;
-                console.log(data);
-                if(data.statusCode != 200){
-                    this.$message(data.message);
-                }else{
-                    this.$message("成功");
-                }
-            }
-        },
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
     }
+  }
+};
 </script>
 
 <style lang="less">
-	@import '../style/mixin';
-    .demo-table-expand {
-        font-size: 0;
-    }
-    .demo-table-expand label {
-        width: 90px;
-        color: #99a9bf;
-    }
-    .demo-table-expand .el-form-item {
-        margin-right: 0;
-        margin-bottom: 0;
-        width: 100%;
-    }
-    .table_container{
-        padding: 20px;
-    }
-    .Pagination{
-        display: flex;
-        justify-content: flex-start;
-        margin-top: 8px;
-    }
-    .inputlength{
-        width: 150px;
-    }
+@import "../style/mixin";
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
+.table_container {
+  padding: 20px;
+}
+.Pagination {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+.inputlength {
+  width: 150px;
+}
 </style>
