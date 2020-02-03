@@ -164,7 +164,7 @@ export default {
       const _this = this;
       this.tableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallreviews`,
+        `${this.$store.state.apiurl}/api/getallreviews`,
         {
           data: {},
           headers: {
@@ -202,7 +202,7 @@ export default {
     // },
     async agreereview(inputonlyid) {
       const res = await axios.post(
-        `https://api.deaso40.com/api/agreereview`,
+        `${this.$store.state.apiurl}/api/agreereview`,
         { onlyid: inputonlyid },
         {
           headers: {
@@ -241,7 +241,7 @@ export default {
       });
       if (value == "-1") return;
       const res = await axios.post(
-        `https://api.deaso40.com/api/cancelreview`,
+        `${this.$store.state.apiurl}/api/cancelreview`,
         {
           onlyid: inputonlyid,
           failtext: value

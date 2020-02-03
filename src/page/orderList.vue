@@ -344,7 +344,7 @@ export default {
     async getOrders() {
       this.tableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallorders`,
+        `${this.$store.state.apiurl}/api/getallorders`,
         {
           data: {},
           headers: {
@@ -372,7 +372,7 @@ export default {
     // },
     async revieworder(inputid) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/revieworder`,
+        `${this.$store.state.apiurl}/api/revieworder`,
         {
           orderid: inputid
         },
@@ -394,7 +394,7 @@ export default {
     },
     async unrevieworder(inputid) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/unrevieworder`,
+        `${this.$store.state.apiurl}/api/unrevieworder`,
         {
           orderid: inputid
         },
@@ -416,7 +416,7 @@ export default {
     },
     async markordervalue(inputid) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/markordervalue`,
+        `${this.$store.state.apiurl}/api/markordervalue`,
         {
           orderid: inputid,
           markvalue: this.markvalue
@@ -458,7 +458,7 @@ export default {
       });
       if (!sure) return;
       const response = await axios.post(
-        `https://api.deaso40.com/api/deleteorder`,
+        `${this.$store.state.apiurl}/api/deleteorder`,
         {
           orderid: inputid
         },
@@ -496,7 +496,7 @@ export default {
         console.log(inputonlyid);
         console.log(this.matcharr[i]);
         const response = await axios.post(
-          `https://api.deaso40.com/api/matchorder`,
+          `${this.$store.state.apiurl}/api/matchorder`,
           {
             teacherid: inputonlyid,
             orderid: this.matcharr[i]
@@ -530,7 +530,7 @@ export default {
     async getTeachers() {
       this.teatableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallreviews`,
+        `${this.$store.state.apiurl}/api/getallreviews`,
         {
           data: {},
           headers: {
@@ -588,7 +588,7 @@ export default {
     },
     async setdate(order) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/setlessondays`,
+        `${this.$store.state.apiurl}/api/setlessondays`,
         {
           orderid: order.id,
           lessondays: order.lessondays,

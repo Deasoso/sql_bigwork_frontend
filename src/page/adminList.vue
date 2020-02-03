@@ -134,7 +134,7 @@ export default {
     // },
     async withdraw(inputonlyid, inputwithdraw) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/withdrawed`,
+        `${this.$store.state.apiurl}/api/withdrawed`,
         {
           onlyid: inputonlyid,
           value: inputwithdraw
@@ -158,7 +158,7 @@ export default {
     async getTeachers() {
       this.teatableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallreviews`,
+        `${this.$store.state.apiurl}/api/getallreviews`,
         {
           data: {},
           headers: {

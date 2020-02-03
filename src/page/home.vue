@@ -36,7 +36,6 @@ export default {
   },
   components: {
     headTop,
-    tendency
   },
   mounted() {
 
@@ -46,7 +45,7 @@ export default {
     async getAllValue() {
       this.tableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallvalue`,
+        `${this.$store.state.apiurl}/api/getallvalue`,
         {
           data: {},
           headers: {

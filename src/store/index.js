@@ -7,6 +7,7 @@ const state = {
 	adminInfo: {
 		avatar: 'default.jpg'
 	},
+	apiurl: 'https://api.deaso40.com'
 }
 
 const mutations = {

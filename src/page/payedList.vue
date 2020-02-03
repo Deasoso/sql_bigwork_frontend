@@ -162,7 +162,7 @@ export default {
     async getOrders() {
       this.tableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallorders`,
+        `${this.$store.state.apiurl}/api/getallorders`,
         {
           data: {},
           headers: {
@@ -201,7 +201,7 @@ export default {
       });
       if (!sure) return;
       const response = await axios.post(
-        `https://api.deaso40.com/api/orderunlock`,
+        `${this.$store.state.apiurl}/api/orderunlock`,
         {
           orderid: inputid
         },
@@ -258,7 +258,7 @@ export default {
     },
     async setdate(order) {
       const response = await axios.post(
-        `https://api.deaso40.com/api/setlessondays`,
+        `${this.$store.state.apiurl}/api/setlessondays`,
         {
           orderid: order.id,
           lessondays: order.lessondays,

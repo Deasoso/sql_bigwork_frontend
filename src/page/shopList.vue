@@ -175,7 +175,7 @@ export default {
     async pushteacher(inputonlyid) {
       console.log(inputonlyid);
       const response = await axios.post(
-        `https://api.deaso40.com/api/pushreview`,
+        `${this.$store.state.apiurl}/api/pushreview`,
         {
           onlyid: inputonlyid
         },
@@ -198,7 +198,7 @@ export default {
     async unpushteacher(inputonlyid) {
       console.log(inputonlyid);
       const response = await axios.post(
-        `https://api.deaso40.com/api/unpushreview`,
+        `${this.$store.state.apiurl}/api/unpushreview`,
         {
           onlyid: inputonlyid
         },
@@ -221,7 +221,7 @@ export default {
     async getTeachers() {
       this.teatableData = [];
       const response = await axios.get(
-        `https://api.deaso40.com/api/getallreviews`,
+        `${this.$store.state.apiurl}/api/getallreviews`,
         {
           data: {},
           headers: {
