@@ -15,7 +15,6 @@
         <div class="table_container" v-show="activeName!='tea'">
             <el-table
                 :data="showtableData"
-                ref="ordtable"
                 :row-key="row => row.index"
                 style="width: 100%">
                 <el-table-column type="expand">
@@ -135,7 +134,6 @@
                         匹配
                     </el-button>
                     <el-button
-                        :ref="'match' + scope.row.id" 
                         size="small"
                         type="success"
                         @click="revieworder(scope.row.id)"
@@ -143,7 +141,6 @@
                         审核通过
                     </el-button>
                     <el-button
-                        :ref="'match' + scope.row.id" 
                         size="small"
                         type="danger"
                         @click="unrevieworder(scope.row.id)"
@@ -168,7 +165,6 @@
         <div class="table_container" v-show="activeName =='tea'">
             <el-table
                 :data="showteatableData"
-                ref="teatable"
                 :row-key="row => row.index"
                 style="width: 100%">
                 <el-table-column type="expand">
@@ -304,7 +300,6 @@ export default {
         this.showtableData = this.tableData.filter(
           item => item.ready == 0 && item.reviewed == 1
         );
-        this.$refs.ordtable.data = this.showtableData;
       } else if (e.name == "tea") {
         this.showteatableData = this.teatableData.filter(item => {
           var have = false;
@@ -319,22 +314,18 @@ export default {
           }
           return have;
         });
-        this.$refs.teatable.data = this.showteatableData;
         console.log(this.showteatableData);
         // this.showtableData = this.tableData.filter(item => item.reviewed === 1)
       } else if (e.name == "done") {
         this.showtableData = this.tableData.filter(
           item => item.payed == 0 && item.ready == 1 && item.reviewed == 1
         );
-        this.$refs.ordtable.data = this.showtableData;
       } else if (e.name == "payed") {
         this.showtableData = this.tableData.filter(
           item => item.payed == 1 && item.reviewed == 1
         );
-        this.$refs.ordtable.data = this.showtableData;
       } else if (e.name == "nonorder") {
         this.showtableData = this.tableData.filter(item => item.reviewed == 0);
-        this.$refs.ordtable.data = this.showtableData;
       }
     },
     async initData() {
@@ -480,13 +471,14 @@ export default {
     },
     async matchorder(inputid) {
       console.log(this.matcharr);
-      if (this.$refs["match" + inputid].type == "success") {
+      if (this.getbuttontype(inputid) == "success") {
+        console.log(this.matcharr.indexOf(inputid));
         if (this.matcharr.indexOf(inputid) == -1) {
-          this.$refs["match" + inputid].type = "danger";
+          // this.$refs["match" + inputid].type = "danger";
           this.matcharr.push(inputid);
         }
       } else {
-        this.$refs["match" + inputid].type = "success";
+        // this.$refs["match" + inputid].type = "success";
         this.removeByValue(this.matcharr, inputid);
       }
       console.log(this.matcharr);

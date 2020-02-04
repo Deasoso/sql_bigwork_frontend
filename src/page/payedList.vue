@@ -13,7 +13,6 @@
         <div class="table_container" v-show="activeName!='tea'">
             <el-table
                 :data="showtableData"
-                ref="ordtable"
                 :row-key="row => row.index"
                 style="width: 100%">
                 <el-table-column type="expand">
@@ -137,7 +136,6 @@ export default {
         this.showtableData = this.tableData.filter(
           item => item.payed == 1 && item.reviewed == 1
         );
-        this.$refs.ordtable.data = this.showtableData;
       } else if (e.name == "teaching") {
         this.showtableData = this.tableData.filter(
           item =>
@@ -145,7 +143,6 @@ export default {
             item.reviewed == 1 &&
             item.teachtimes < item.times
         );
-        this.$refs.ordtable.data = this.showtableData;
       } else if (e.name == "teached") {
         this.showtableData = this.tableData.filter(
           item =>
@@ -153,7 +150,6 @@ export default {
             item.reviewed == 1 &&
             item.teachtimes >= item.times
         );
-        this.$refs.ordtable.data = this.showtableData;
       }
     },
     async initData() {

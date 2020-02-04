@@ -13,7 +13,6 @@
         <div class="table_container">
             <el-table
                 :data="showtableData"
-                ref="eltable"
                 :row-key="row => row.index"
                 style="width: 100%">
                 <el-table-column type="expand">
@@ -142,7 +141,6 @@ export default {
   },
   methods: {
     Clicktab(e) {
-      console.log(this.$refs.eltable);
       this.activeName = e.name;
       console.log(e.name);
       if (e.name == "all") {
@@ -154,7 +152,6 @@ export default {
       } else if (e.name == "cancel") {
         this.showtableData = this.tableData.filter(item => item.reviewed === 3);
       }
-      this.$refs.eltable.data = this.showtableData;
     },
     async initData() {
       await this.getReviews();

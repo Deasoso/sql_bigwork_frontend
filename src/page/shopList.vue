@@ -13,7 +13,6 @@
         <div class="table_container">
             <el-table
                 :data="showteatableData"
-                ref="teatable"
                 :row-key="row => row.index"
                 style="width: 100%">
                 <el-table-column type="expand">
@@ -148,17 +147,14 @@ export default {
       console.log(this.teatableData);
       if (e.name == "all") {
         this.showteatableData = this.teatableData;
-        this.$refs.teatable.data = this.showteatableData;
       } else if (e.name == "nopushed") {
         this.showteatableData = this.teatableData.filter(
           item => item.pushed == 0
         );
-        this.$refs.teatable.data = this.showteatableData;
       } else if (e.name == "pushed") {
         this.showteatableData = this.teatableData.filter(
           item => item.pushed == 1
         );
-        this.$refs.teatable.data = this.showteatableData;
       }
     },
     async initData() {
