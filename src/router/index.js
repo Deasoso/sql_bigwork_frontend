@@ -10,6 +10,8 @@ const foodList = r => require.ensure([], () => r(require('@/page/foodList')), 'f
 const orderList = r => require.ensure([], () => r(require('@/page/orderList')), 'orderList');
 const adminList = r => require.ensure([], () => r(require('@/page/adminList')), 'adminList');
 const payedList = r => require.ensure([], () => r(require('@/page/payedList')), 'payedList');
+const studentList = r => require.ensure([], () => r(require('@/page/studentList')), 'studentList');
+const lessondayList = r => require.ensure([], () => r(require('@/page/lessondayList')), 'lessondayList');
 
 const routes = [
 	{
@@ -43,6 +45,14 @@ const routes = [
 		},{
 			path: '/payedList',
 			component: payedList,
+			meta: ['数据管理', '管理员列表'],
+		},{
+			path: '/studentList',
+			component: studentList,
+			meta: ['数据管理', '管理员列表'],
+		},{
+			path: '/lessondayList',
+			component: lessondayList,
 			meta: ['数据管理', '管理员列表'],
 		}]
 	}
