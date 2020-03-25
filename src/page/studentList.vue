@@ -1,4 +1,5 @@
 <template>
+    <!-- 已废弃 -->
     <div class="fillcontain">
         <head-top></head-top>
         <el-input v-model="headertoken" placeholder="请输入header">

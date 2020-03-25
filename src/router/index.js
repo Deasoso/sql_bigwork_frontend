@@ -5,13 +5,14 @@ Vue.use(Router)
 
 const home = r => require.ensure([], () => r(require('@/page/home')), 'home');
 const manage = r => require.ensure([], () => r(require('@/page/manage')), 'manage');
-const shopList = r => require.ensure([], () => r(require('@/page/shopList')), 'shopList');
+const pushList = r => require.ensure([], () => r(require('@/page/pushList')), 'pushList');
 const foodList = r => require.ensure([], () => r(require('@/page/foodList')), 'foodList');
 const orderList = r => require.ensure([], () => r(require('@/page/orderList')), 'orderList');
 const adminList = r => require.ensure([], () => r(require('@/page/adminList')), 'adminList');
 const payedList = r => require.ensure([], () => r(require('@/page/payedList')), 'payedList');
-const studentList = r => require.ensure([], () => r(require('@/page/studentList')), 'studentList');
+const studentList = r => require.ensure([], () => r(require('@/page/studentList')), 'studentList'); // 废弃
 const lessondayList = r => require.ensure([], () => r(require('@/page/lessondayList')), 'lessondayList');
+const couponList = r => require.ensure([], () => r(require('@/page/couponList')), 'couponList');
 
 const routes = [
 	{
@@ -27,8 +28,8 @@ const routes = [
 			component: home,
 			meta: [],
 		},{
-			path: '/shopList',
-			component: shopList,
+			path: '/pushList',
+			component: pushList,
 			meta: ['数据管理', '商家列表'],
 		},{
 			path: '/foodList',
@@ -45,17 +46,21 @@ const routes = [
 		},{
 			path: '/payedList',
 			component: payedList,
-			meta: ['数据管理', '管理员列表'],
+			meta: ['数据管理', '已支付订单列表'],
 		},{
-			path: '/studentList',
+			path: '/studentList', // 废弃
 			component: studentList,
-			meta: ['数据管理', '管理员列表'],
+			meta: ['数据管理', '学生列表'],
 		},{
 			path: '/lessondayList',
 			component: lessondayList,
-			meta: ['数据管理', '管理员列表'],
-		}]
-	}
+			meta: ['数据管理', '排课列表'],
+		},{
+			path: '/couponList',
+			component: couponList,
+			meta: ['数据管理', '排课列表'],
+		}
+	]}
 ]
 
 export default new Router({
