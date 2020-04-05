@@ -7,7 +7,8 @@
         <el-tabs v-model="activeName" type="card" @tab-click="Clicktab">
             <el-tab-pane label="全部" name="all"></el-tab-pane>
             <el-tab-pane label="未确认" name="noconfirmed"></el-tab-pane>
-            <el-tab-pane label="已确认" name="confirmed"></el-tab-pane>
+            <el-tab-pane label="已成功" name="confirmed"></el-tab-pane>
+            <el-tab-pane label="已失败" name="deleted"></el-tab-pane>
         </el-tabs>
         <!-- 显示教师表格 -->
         <div class="table_container">
@@ -68,15 +69,19 @@
                   prop="amount">
                 </el-table-column>
                 <el-table-column
-                  label="是否确认"
+                  label="状态"
                   prop="confirmedname">
                 </el-table-column>
-                <el-table-column label="操作" width="160">
+                <el-table-column label="操作" width="320">
                   <template slot-scope="scope">
                     <el-button
                       size="small"
                       type="success"
                       @click="confirmcoupon(scope.row.id)">推荐成功</el-button>
+                    <el-button
+                      size="small"
+                      type="danger"
+                      @click="deletecoupon(scope.row.id)">推荐失败</el-button>
                   </template>
                 </el-table-column>
             </el-table>
@@ -131,6 +136,10 @@ export default {
         this.showcouponData = this.couponData.filter(
           item => item.confirmed == 1
         );
+      } else if (e.name == "deleted") {
+        this.showcouponData = this.couponData.filter(
+          item => item.confirmed == 2
+        );
       }
     },
     async initData() {
@@ -168,6 +177,48 @@ export default {
       console.log(inputonlyid);
       const response = await axios.post(
         `${this.$store.state.apiurl}/api/confirmcoupon`,
+        {
+          couponid: inputonlyid
+        },
+        {
+          headers: {
+            token: this.headertoken
+          }
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      if (data.statusCode != 200) {
+        this.$message(data.message);
+      } else {
+        this.$message("成功");
+      }
+      await this.initData();
+      this.Clicktab({ name: this.activeName });
+    },
+    async deletecoupon(inputonlyid) {
+      const sure = await new Promise((resolve, reject) => {
+        this.$msgbox({
+          title: "提示",
+          message: "确认推荐失败吗？",
+          showCancelButton: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          beforeClose: (action, instance, done) => {
+            if (action === "confirm") {
+              done();
+              resolve(true);
+            } else {
+              done();
+              resolve(false);
+            }
+          }
+        });
+      });
+      if (!sure) return;
+      console.log(inputonlyid);
+      const response = await axios.post(
+        `${this.$store.state.apiurl}/api/deletecoupon`,
         {
           couponid: inputonlyid
         },
@@ -227,7 +278,7 @@ export default {
           item.user = this.userData.filter(
             user => user.onlyid == item.owner
           )[0];
-          item.confirmedname = item.confirmed == 1 ? '是' : '否';
+          item.confirmedname = item.confirmed == 0 ? '未确认' : item.confirmed == 1 ? '成功' : '失败';
           item.typename = item.type == 1 ? '优惠券' : '提现';
         });
         this.showcouponData = this.couponData;
