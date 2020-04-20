@@ -14,7 +14,7 @@
         <div class="table_container">
             <el-table
                 :data="showcouponData"
-                :row-key="row => row.index"
+                :row-key="row => row.id"
                 style="width: 100%">
                 <el-table-column type="expand">
                   <template slot-scope="props">

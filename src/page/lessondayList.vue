@@ -14,7 +14,7 @@
         <div class="table_container" v-show="activeName!='tea'">
             <el-table
                 :data="showtableData"
-                :row-key="row => row.index"
+                :row-key="row => row.id"
                 style="width: 100%">
                 <el-table-column
                   label="科目"
