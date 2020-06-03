@@ -1,69 +1,69 @@
 <template>
-    <div class="fillcontain">
-        <head-top></head-top>
-        <div style="margin: 15px;">
-          <el-input placeholder="搜索" v-model="searchinput" class="input-with-select">
-            <el-select v-model="searchselect" slot="prepend" placeholder="请选择">
-              <el-option label="书名" value="1"></el-option>
-              <el-option label="用户" value="2"></el-option>
-            </el-select>
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input>
-        </div>
-        <el-tabs v-model="activeName" type="card" @tab-click="Clicktab">
-            <el-tab-pane label="所有" name="all"></el-tab-pane>
-            <el-tab-pane label="在架" name="no"></el-tab-pane>
-            <el-tab-pane label="已租出" name="yes"></el-tab-pane>
-            <el-tab-pane label="已卖出" name="cancel"></el-tab-pane>
-        </el-tabs>
-        <div class="table_container">
-            <el-table
-                :data="showtableData"
-                :row-key="row => row.id"
-                style="width: 100%">
-                <el-table-column type="expand">
-                  <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="地区">
-                            {{props.row.area}}
-                        </el-form-item>
-                    </el-form>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="编号"
-                  prop="id">
-                </el-table-column>
-                <el-table-column
-                  label="书名"
-                  prop="name">
-                </el-table-column>
-                <el-table-column
-                  label="介绍"
-                  prop="introduce">
-                </el-table-column>
-                <el-table-column
-                  label="价格"
-                  prop="value">
-                </el-table-column>
-                <el-table-column
-                  label="备注"
-                  prop="remark">
-                </el-table-column>
-                <el-table-column
-                  label="状态"
-                  prop="remark">
-                </el-table-column>
-                <el-table-column label="操作" width="160">
-                  <template slot-scope="scope">
-                    <el-button
-                      size="small"
-                      @click="agreereview(scope.row.onlyid)">通过</el-button>
-                  </template>
-                </el-table-column>
-            </el-table>
-        </div>
+  <div class="fillcontain">
+    <head-top></head-top>
+    <div style="margin: 15px;">
+      <el-input placeholder="搜索" v-model="searchinput" class="input-with-select">
+        <el-select v-model="searchselect" slot="prepend" placeholder="请选择">
+          <el-option label="书名" value="1"></el-option>
+          <el-option label="用户" value="2"></el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search"></el-button>
+      </el-input>
     </div>
+    <el-tabs v-model="activeName" type="card" @tab-click="Clicktab">
+      <el-tab-pane label="所有" name="all"></el-tab-pane>
+      <el-tab-pane label="在架" name="no"></el-tab-pane>
+      <el-tab-pane label="已租出" name="yes"></el-tab-pane>
+      <el-tab-pane label="已卖出" name="cancel"></el-tab-pane>
+    </el-tabs>
+    <div class="table_container">
+      <el-table
+        :data="showtableData"
+        :row-key="row => row.id"
+        style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="地区">
+                  {{props.row.area}}
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="编号"
+          prop="id">
+        </el-table-column>
+        <el-table-column
+          label="书名"
+          prop="name">
+        </el-table-column>
+        <el-table-column
+          label="介绍"
+          prop="introduce">
+        </el-table-column>
+        <el-table-column
+          label="价格"
+          prop="value">
+        </el-table-column>
+        <el-table-column
+          label="备注"
+          prop="remark">
+        </el-table-column>
+        <el-table-column
+          label="状态"
+          prop="remark">
+        </el-table-column>
+        <el-table-column label="操作" width="160">
+          <template slot-scope="scope">
+            <el-button
+              size="small"
+              @click="agreereview(scope.row.onlyid)">通过</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </div>
 </template>
 
 <script>
