@@ -32,7 +32,20 @@ const query = async function(sql){
   return k;
 }
 
+const silentquery = async function(sql){
+  // 无提示
+  console.log(sql);
+  const k = await axios.post(
+    url + 'post/'
+  ,{
+    token: store.state.token,
+    sql: sql
+  });
+  return k;
+}
+
 export default {
   login,
-  query
+  query,
+  silentquery
 }
