@@ -2,37 +2,61 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div style="margin: 15px;">
-      <el-input placeholder="搜索" v-model="searchinput" class="input-with-select">
+      <el-input placeholder="搜索名称" v-model="searchinput" class="input-with-select">
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
+
+    <el-button
+      size="small"
+      type="success"
+      style="margin-left: 15px;"
+      @click="newUserDialog = true">添加用户</el-button>
+
     <div class="table_container">
       <el-table
         :data="showtableData"
         :row-key="row => row.id"
         style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="个性签名">
+                {{props.row.introduce}}
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column
           label="编号"
           prop="id">
         </el-table-column>
         <el-table-column
-          label="名称"
+          label="用户名"
           prop="name">
         </el-table-column>
         <el-table-column
-          label="个性签名"
-          prop="introduce">
+          label="余额"
+          prop="value">
         </el-table-column>
         <el-table-column
           label="备注"
           prop="remark">
         </el-table-column>
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="320">
           <template slot-scope="scope">
             <el-button
               size="small"
               type="primary"
-              @click="agreereview(scope.row.onlyid)">修改</el-button>
+              @click="agreereview(scope.row.onlyid)">修改信息</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="agreereview(scope.row.onlyid)">充值</el-button>
+            <el-button
+              size="small"
+              type="warning"
+              @click="agreereview(scope.row.onlyid)">消费</el-button>
             <el-button
               size="small"
               type="danger"
@@ -41,6 +65,24 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="添加用户" :visible.sync="newUserDialog">
+      <el-input placeholder="请输入内容" v-model="newUserName" style="margin:5px;">
+        <template slot="prepend">用户名</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="newUserIntroduce" style="margin:5px;">
+        <template slot="prepend">个性签名</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="newUserValue" style="margin:5px;">
+        <template slot="prepend">初始余额</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="newUserRemark" style="margin:5px;">
+        <template slot="prepend">备注</template>
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="newUserDialog = false">取 消</el-button>
+        <el-button type="primary" @click="login()">添 加</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -54,7 +96,13 @@ export default {
       tableData: [],
       showtableData: [],
       searchselect: "",
-      searchinput: ""
+      searchinput: "",
+
+      newUserDialog: false,
+      newUserName: '',
+      newUserIntroduce: '',
+      newUserValue: '',
+      newUserRemark: ''
     };
   },
   beforeRouteEnter (to, from, next) {
