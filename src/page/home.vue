@@ -1,9 +1,6 @@
 <template>
     <div>
       <head-top></head-top>
-      <el-input v-model="headertoken" placeholder="请输入header">
-      </el-input>
-      <el-button type="primary" @click="getAllValue">获取总数据</el-button>
       <section class="data_section">
         <header class="section_title">数据统计</header>
         <!-- <el-row :gutter="20" style="margin-bottom: 10px;">
@@ -23,15 +20,13 @@
 </template>
 
 <script>
-const axios = require("axios");
 import headTop from '../components/headTop'
 
 export default {
   data() {
     return {
-      headertoken: "",
       allvalue: 0,
-      nowithdraw: 0
+      nowithdraw: 0,
     };
   },
   components: {
@@ -43,24 +38,7 @@ export default {
   computed: {},
   methods: {
     async getAllValue() {
-      this.tableData = [];
-      const response = await axios.get(
-        `${this.$store.state.apiurl}/api/getallvalue`,
-        {
-          data: {},
-          headers: {
-            token: this.headertoken
-          }
-        }
-      );
-      console.log(response);
-      const data = response.data;
-      if (data.statusCode != 200) {
-        this.$message(data.message);
-      } else {
-        this.allvalue = data.result.allvalue;
-        this.nowithdraw = data.result.nowithdraw;
-      }
+
     },
   }
 };

@@ -17,7 +17,7 @@
 				</keep-alive>
 			</el-col>
 		</el-row>
-  	</div>
+  </div>
 </template>
 
 <script>

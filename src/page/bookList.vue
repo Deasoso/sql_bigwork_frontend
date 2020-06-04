@@ -21,15 +21,6 @@
         :data="showtableData"
         :row-key="row => row.id"
         style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="地区">
-                  {{props.row.area}}
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>
         <el-table-column
           label="编号"
           prop="id">
@@ -52,7 +43,7 @@
         </el-table-column>
         <el-table-column
           label="状态"
-          prop="remark">
+          prop="statu">
         </el-table-column>
         <el-table-column label="操作" width="160">
           <template slot-scope="scope">

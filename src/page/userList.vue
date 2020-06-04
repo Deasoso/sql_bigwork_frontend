@@ -11,15 +11,6 @@
         :data="showtableData"
         :row-key="row => row.id"
         style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="地区">
-                  {{props.row.area}}
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>
         <el-table-column
           label="编号"
           prop="id">
@@ -29,7 +20,7 @@
           prop="name">
         </el-table-column>
         <el-table-column
-          label="签名"
+          label="个性签名"
           prop="introduce">
         </el-table-column>
         <el-table-column
@@ -40,28 +31,16 @@
           <template slot-scope="scope">
             <el-button
               size="small"
-              @click="agreereview(scope.row.onlyid)">通过</el-button>
+              type="primary"
+              @click="agreereview(scope.row.onlyid)">修改</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="agreereview(scope.row.onlyid)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -78,7 +57,19 @@ export default {
       searchinput: ""
     };
   },
-  created() {},
+  beforeRouteEnter (to, from, next) {
+    // 进入页面时执行一次
+    next(async vm => {
+      const k = await api.query('select * from user');
+      vm.showtableData = k.data.data;
+    });
+  },
+  // async beforeRouteEnter() {
+  //   console.log('created');
+  //   const k = await api.query('select * from user');
+  //   this.showtableData = k.data.data;
+  //   console.log(k.data.data[0].name);
+  // },
   computed: {},
   components: {
     headTop

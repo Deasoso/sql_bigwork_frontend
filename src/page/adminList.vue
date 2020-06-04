@@ -98,7 +98,6 @@
 </template>
 
 <script>
-const axios = require("axios");
 import headTop from "../components/headTop";
 
 export default {

@@ -4,15 +4,12 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-	adminInfo: {
-		avatar: 'default.jpg'
-	},
-	apiurl: 'https://api.deaso40.com'
+	token: '',
 }
 
 const mutations = {
-	saveAdminInfo(state, adminInfo){
-		state.adminInfo = adminInfo;
+	saveToken(state, info){
+		state.token = info;
 	}
 }
 

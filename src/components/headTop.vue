@@ -1,22 +1,47 @@
 <template>
-    <div class="header_container">
+	<div class="header_container">
 
 		<el-breadcrumb separator="/">
 			<el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
 			<el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
 		</el-breadcrumb>
 
-		<el-button type="primary" style="margin-right:10px;">登录</el-button>
-    </div>
+		<el-button v-if="$store.state.token == ''" type="primary" @click="dialogFormVisible=true" style="margin-right:10px;">登录</el-button>
+		<el-button v-else type="primary" plain disabled style="margin-right:10px;">已登录</el-button>
+
+		<el-dialog title="登录" :visible.sync="dialogFormVisible">
+			<el-input placeholder="请输入内容" v-model="input1" style="margin:5px;">
+				<template slot="prepend">ip地址</template>
+			</el-input>
+			<el-input placeholder="请输入内容" v-model="input2" style="margin:5px;">
+				<template slot="prepend">端口</template>
+			</el-input>
+			<el-input placeholder="请输入内容" v-model="input3" style="margin:5px;">
+				<template slot="prepend">用户名</template>
+			</el-input>
+			<el-input placeholder="请输入内容" v-model="input4" style="margin:5px;">
+				<template slot="prepend">密码</template>
+			</el-input>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisible = false">取 消</el-button>
+				<el-button type="primary" @click="login()">登 录</el-button>
+			</div>
+		</el-dialog>
+	</div>
 </template>
 
 <script>
+	import api from "../api";
 	import {mapActions, mapState} from 'vuex'
 
     export default {
     	data(){
     		return {
-
+					dialogFormVisible: false,
+					input1: '127.0.0.1',
+					input2: '3308',
+					input3: 'root',
+					input4: '',
     		}
     	},
     	created(){
@@ -26,7 +51,10 @@
 
     	},
 			methods: {
-
+				async login(){
+					await api.login();
+					this.dialogFormVisible = false;
+				}
 			}
     }
 </script>
