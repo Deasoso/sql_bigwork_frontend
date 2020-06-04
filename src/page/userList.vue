@@ -236,6 +236,10 @@ export default {
       if(k.data.code == 200) this.initData();
     },
     search(){
+      if(this.searchinput == '') {
+        this.showtableData = this.tableData;
+        return
+      };
       this.showtableData = this.showtableData.filter(
         item => item.name.indexOf(this.searchinput) != -1
       );
