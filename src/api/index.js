@@ -2,24 +2,24 @@ import store from '../store/';
 import axios from 'axios';
 import { Message } from 'element-ui';
 
-var url = 'http://localhost:8991/';
+// var url = 'http://47.240.47.183:8991/'; // 在store/index.js里设置
 
-const login = async function(){
-  console.log(url + 'login/');
+const login = async function(url, port, user, password){
+  console.log('http://' + url + ':' + port + '/login/');
   const k = await axios.post(
-    url + 'login/'
+    'http://' + url + ':' + port + '/login/'
   ,{
-    user: 'admin',
-    password: '123999'
+    user: user,
+    password: password
   });
   console.log(k)
-  store.commit('saveToken', k.data.token)
+  return k;
 }
 
 const query = async function(sql){
   console.log(sql);
   const k = await axios.post(
-    url + 'post/'
+    'http://' + store.state.url + ':' + store.state.port + '/post/'
   ,{
     token: store.state.token,
     sql: sql
@@ -36,7 +36,7 @@ const silentquery = async function(sql){
   // 无提示
   console.log(sql);
   const k = await axios.post(
-    url + 'post/'
+    'http://' + store.state.url + ':' + store.state.port + 'post/'
   ,{
     token: store.state.token,
     sql: sql

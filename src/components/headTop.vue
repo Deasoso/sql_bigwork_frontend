@@ -19,7 +19,7 @@
 			<el-input placeholder="请输入内容" v-model="input3" style="margin:5px;">
 				<template slot="prepend">用户名</template>
 			</el-input>
-			<el-input placeholder="请输入内容" v-model="input4" style="margin:5px;">
+			<el-input placeholder="请输入内容" type="password" v-model="input4" style="margin:5px;">
 				<template slot="prepend">密码</template>
 			</el-input>
 			<div slot="footer" class="dialog-footer">
@@ -38,9 +38,9 @@
     	data(){
     		return {
 					dialogFormVisible: false,
-					input1: '127.0.0.1',
-					input2: '3308',
-					input3: 'root',
+					input1: '47.240.47.183',
+					input2: '8991',
+					input3: 'admin',
 					input4: '',
     		}
     	},
@@ -52,8 +52,16 @@
     	},
 			methods: {
 				async login(){
-					await api.login();
-					this.dialogFormVisible = false;
+					const k = await api.login(this.input1, this.input2, this.input3, this.input4);
+					if(k.data.code != 200){
+						this.$message.error('登录失败');
+					}else{
+						this.$message("登录成功");
+						this.$store.commit('saveToken', k.data.token)
+						this.$store.commit('saveUrl', this.input1)
+						this.$store.commit('savePort', this.input2)
+						this.dialogFormVisible = false;
+					}
 				}
 			}
     }
