@@ -1,5 +1,7 @@
 import store from '../store/';
 import axios from 'axios';
+import { Message } from 'element-ui';
+
 var url = 'http://localhost:8991/';
 
 const login = async function(){
@@ -15,12 +17,18 @@ const login = async function(){
 }
 
 const query = async function(sql){
+  console.log(sql);
   const k = await axios.post(
     url + 'post/'
   ,{
     token: store.state.token,
     sql: sql
   });
+  if(k.data.code != 200){
+    Message.error('啊哦，出错了');
+  }else{
+    Message("成功");
+  }
   return k;
 }
 
