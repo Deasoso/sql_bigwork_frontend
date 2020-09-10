@@ -36,7 +36,7 @@ const silentquery = async function(sql){
   // 无提示
   console.log(sql);
   const k = await axios.post(
-    'http://' + store.state.url + ':' + store.state.port + 'post/'
+    'http://' + store.state.url + ':' + store.state.port + '/post/'
   ,{
     token: store.state.token,
     sql: sql

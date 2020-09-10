@@ -33,7 +33,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```
 create database book;
 create table book(id int primary key auto_increment not null,name char(100) not null, introduce char(100), value int not null, remark char(100), statu char(100) not null default '在架', borrowuser char(100), borrowtime char(100));
-create table user(id int primary key auto_increment not null,name char(100) not null unique, introduce char(100), remark char(100));
+create table user(id int primary key auto_increment not null,name char(100) not null unique, introduce char(100),value int not null default 0, remark char(100));
 INSERT INTO user ( name ) VALUES ( '张三' );
 INSERT INTO book ( name,value ) VALUES ( '飘',10 );
 INSERT INTO book ( name,value ) VALUES ( '飘',10 );
